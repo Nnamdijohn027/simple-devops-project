@@ -27,7 +27,7 @@ def home():
     <body>
         <div class="box">
             <h1>🚀 Simple DevOps Project</h1>
-            <p>Version: <span class="version">1.0.0</span></p>
+            <p>Version: <span class="version">1.0.1</span></p>
             <p>Hostname: <span class="hostname">{hostname}</span></p>
             <p>Uptime: <span class="hostname">{uptime} seconds</span></p>
         </div>
@@ -44,4 +44,4 @@ def health():
     })
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5005, debug=True)
