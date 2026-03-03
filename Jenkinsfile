@@ -3,6 +3,8 @@ pipeline {
     
     environment {
         DOCKER_IMAGE = "simple-flask-app:${BUILD_NUMBER}"
+        HOST_PORT = "5002"  // Changed from 5000 to 5002 to avoid conflict
+        CONTAINER_PORT = "5000"
     }
     
     stages {
@@ -26,9 +28,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        docker run -d -p 5001:5000 --name test-container ${DOCKER_IMAGE}
-                        sleep 3
-                        curl http://localhost:5001/health || echo "Health check failed but continuing"
+                        docker run -d -p 5003:5000 --name test-container ${DOCKER_IMAGE}
+                        sleep 5
+                        curl http://localhost:5003/health || echo "⚠️ Health check failed but continuing"
                         docker stop test-container && docker rm test-container || true
                     '''
                 }
@@ -49,8 +51,9 @@ pipeline {
                 sh '''
                     docker run -d \
                         --name flask-app \
-                        -p 5000:5000 \
+                        -p ${HOST_PORT}:${CONTAINER_PORT} \
                         ${DOCKER_IMAGE}
+                    echo "✅ App running at http://localhost:${HOST_PORT}"
                 '''
             }
         }
@@ -58,7 +61,7 @@ pipeline {
     
     post {
         success {
-            echo '✅ Pipeline successful! App running at http://localhost:5000'
+            echo "✅ Pipeline successful! App running at http://localhost:${HOST_PORT}"
         }
         failure {
             echo '❌ Pipeline failed. Check the logs.'
